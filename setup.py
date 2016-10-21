@@ -15,10 +15,10 @@ setup(name='python_gyg',
         'Programming Language :: Python :: 2.7'
 ],
       author='Lukas Toma',
-      install_requires=["requests", "json"],
+      install_requires=["requests", "datetime"],
       author_email='toma.lukas@gmail.com',
       license='MIT',
       packages=['python_gyg'],
       zip_safe=False,
       test_suite='nose.collector',
-      tests_require=['nose'])
+      tests_require=['nose', "datetime"])

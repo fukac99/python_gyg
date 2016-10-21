@@ -3,8 +3,11 @@ LOCATION_URL = "https://api.getyourguide.com/1/locations/{}"
 TOURS_URL = "https://api.getyourguide.com/1/tours"
 TOUR_URL = "https://api.getyourguide.com/1/tours/{}"
 
+#TODO picture format
+
 import requests
 import json
+import datetime
 
 class GetYourGuide(object):
 
@@ -18,25 +21,6 @@ class GetYourGuide(object):
             currency: currency, in which the content is returned. Default 'EUR'
    
     """
-
-    class GetYourGuideError(Exception):
-
-        """
-            This class is used for all API errors.
-        """
-        pass
-    
-    class RequiredParameterError(Exception):
-        """
-            this class is used for missing parameters errors        
-        """
-        pass
-    
-    class BadParameterError(Exception):
-        """
-            this class is used for missing parameters errors        
-        """
-        pass
 
     def __init__(self, api_key, cnt_language="en", currency="EUR"):
         self._api_key = api_key
@@ -57,7 +41,7 @@ class GetYourGuide(object):
             raise GetYourGuide.RequiredParameterError("location_id must be set")
             
         kwargs = {}
-        return self._query(LOCATION_URL.format(location_id), **kwargs)
+        return self._query(LOCATION_URL.format(location_id), kwargs)
         
     def search_locations(self,
                          q=None,
@@ -79,7 +63,7 @@ class GetYourGuide(object):
                   "coordinates[]":coordinates,
                   "location[]":location,
                   "location_type":location_type}
-        return self._query(LOCATIONS_URL, **kwargs)
+        return self._query(LOCATIONS_URL, kwargs)
         
     def search_tours(self,
                      q=None,
@@ -123,15 +107,16 @@ class GetYourGuide(object):
                         free-sale-only: Only Tours that can be booked with immediate confirmation.
                         mobile-voucher: Only Tours for which the supplier accepts mobile vouchers
         """
-        if q is None & coordinates is None & location is None & categories is None:
+        if (q is None) & (coordinates is None) & (location is None) & (categories is None):
             raise GetYourGuide.RequiredParameterError("Requires on of q, coordinates, categories or location to be specified")
         
-        if type(date) == "datetime":
-            date = [date]
-        elif type(date) != "list":
-            raise GetYourGuide.BadParameterError("Date should be either datetime object or list of two datetime objects")
-        elif type(date[0]) != "datetime":
-            raise GetYourGuide.BadParameterError("Date should be either datetime object or list of two datetime objects")
+        if date is not None:        
+            if isinstance(date, datetime.datetime):
+                date = [date]
+            elif not isinstance(date, list):
+                raise GetYourGuide.BadParameterError("Date should be either datetime object or list of two datetime objects")
+            elif not isinstance(date[0], datetime.datetime):
+                raise GetYourGuide.BadParameterError("Date should be either datetime object or list of two datetime objects")
             
         kwargs = {"q": q,
                   "coordinates[]":coordinates,
@@ -146,7 +131,7 @@ class GetYourGuide(object):
                   "sortfield": sortfield,
                   "sortdirection": sortdirection
                   }
-        return self._query(LOCATIONS_URL, **kwargs)
+        return self._query(LOCATIONS_URL, kwargs)
         
     def get_tour(self, tour_id=None):
         """
@@ -156,16 +141,17 @@ class GetYourGuide(object):
             raise GetYourGuide.RequiredParameterError("tour_id must be set")
             
         kwargs = {}
-        return self._query(TOUR_URL.format(tour_id), **kwargs)
+        return self._query(TOUR_URL.format(tour_id), kwargs)
 
 
-    def _query(self, url, **kwargs):
+    def _query(self, url, kwargs):
         """
             All query methods have the same logic, so don't repeat it! Query the URL, parse the response as JSON, and check for errors. If all
             goes well, return the parsed JSON.
         """
         parameters = self._base_params
         parameters.update(GetYourGuide._get_clean_parameters(kwargs))
+        print parameters
         head ={
                     "Accept": "application/json",
                     "X-ACCESS-TOKEN" : self._api_key
@@ -183,3 +169,22 @@ class GetYourGuide(object):
 
         # we got a good response, so return
         return response_json
+        
+class GetYourGuideError(Exception):
+
+        """
+            This class is used for all API errors.
+        """
+        pass
+    
+class RequiredParameterError(Exception):
+    """
+        this class is used for missing parameters errors        
+    """
+    pass
+
+class BadParameterError(Exception):
+    """
+        this class is used for missing parameters errors        
+    """
+    pass
