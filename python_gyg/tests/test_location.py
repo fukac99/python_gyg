@@ -3,7 +3,7 @@ from unittest import TestCase
 import python_gyg
 import datetime
 
-GYG_API_KEY = "CgV4oG41Z7ZtfYJqlyPfYByvInsPRXJvlzUm6DgBoKYDJpy7"
+GYG_API_KEY = "<your_api_key>"
 
 class TestLocation(TestCase):
     def test_is_GetYourGuide_isntance(self):

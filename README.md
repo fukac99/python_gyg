@@ -46,7 +46,8 @@ gyg.search_locations(coordinates=[40.75, -73.97, 10], location_type="poi")
 
 ## Development setup
 
-To run development tests. run the following in the main directory:
+To run development tests. Fill in your api key to test_location.py. 
+Then run the following in the main directory:
 ```sh
 python setup.py test
 ```
