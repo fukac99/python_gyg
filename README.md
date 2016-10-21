@@ -58,6 +58,6 @@ python setup.py test
 
 ## Meta
 
-Lukas Toma – [@lukas_toma](https://twitter.com/dbader_org) – toma.lukas@gmail.com
+Lukas Toma – [@lukas_toma](https://twitter.com/lukas_toma) – toma.lukas@gmail.com
 
 
